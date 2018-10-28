@@ -10,7 +10,7 @@ require('dotenv').config()
 const server = express()
 
 server.use(cors())
-server.use(require('morgan')('dev'))
+// server.use(require('morgan')('dev'))
 server.use(bodyParser.urlencoded({ extended: false }))
 server.use(bodyParser.json())
 server.use(express.static(path.join(__dirname, 'public')))
@@ -34,7 +34,7 @@ mongoose
   .connect(db, { useCreateIndex: true, useNewUrlParser: true })
   .then(() => console.log('> Database connected'))
   .catch(err => console.log(err))
-mongoose.set('debug', true)
+// mongoose.set('debug', true)
 
 // Models
 require('./api/users/model')
