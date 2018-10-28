@@ -1,0 +1,16 @@
+.div-center {
+  margin: 0 auto;
+}
+
+.login-panel {
+  margin: 0 auto;
+  width: 60%;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.mat-color {
+  color: #ee6e73;
+}
