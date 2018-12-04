@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import './Login.css'
 import axios from 'axios'
-import setAuthHeader from '../utils/setAuthHeader'
+import setAuthHeader from '../../utils/setAuthHeader'
+import { withRouter } from 'react-router-dom'
 
 class Login extends Component {
   constructor (props) {
@@ -46,7 +47,7 @@ class Login extends Component {
         }
         this.props.clearErrors()
         this.props.loadUser(data)
-        this.props.changeRoute('home')
+        this.props.history.push('/home')
       })
       .catch(err => {
         if (err) {
@@ -105,4 +106,4 @@ class Login extends Component {
   }
 }
 
-export default Login
+export default withRouter(Login)
