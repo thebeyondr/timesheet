@@ -62,9 +62,6 @@ class Jobs extends Component {
     const { jobs, clients } = this.state
     return (
       <div className='container'>
-        {/* <div className='card-panel green white-text'>
-          Package Design is now complete!
-        </div> */}
         <JobsDisplay jobs={jobs} handleJob={this.props.handleJob} />
         <JobForm clients={clients} addJob={this.addJob} />
       </div>

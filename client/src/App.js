@@ -1,17 +1,27 @@
 import React, { Component } from 'react'
+import { BrowserRouter, Route } from 'react-router-dom'
 import Jobs from './components/Jobs/'
 import Login from './components/Login'
 import './App.css'
 import Job from './components/Job'
 import setAuthHeader from './utils/setAuthHeader'
+import Header from './components/common/Header'
+import jwtDecode from 'jwt-decode'
 
 const initialState = {
-  route: 'login',
   isSignedIn: false,
   errors: {},
   user: {},
   jobId: '',
   completed: ''
+}
+
+if (window.localStorage.jwtToken) {
+  const { jwtToken } = window.localStorage
+  setAuthHeader(jwtToken)
+  const decoded = jwtDecode(jwtToken)
+  initialState.user = decoded
+  initialState.isSignedIn = true
 }
 
 class App extends Component {
@@ -41,14 +51,14 @@ class App extends Component {
     this.setState({ errors: err })
   }
 
-  changeRoute = route => {
-    if (route === 'login') {
-      this.setState(initialState)
-    } else if (route === 'home') {
-      this.setState({ isSignedIn: true })
-    }
-    this.setState({ route })
-  }
+  // changeRoute = route => {
+  //   if (route === 'login') {
+  //     this.setState(initialState)
+  //   } else if (route === 'home') {
+  //     this.setState({ isSignedIn: true })
+  //   }
+  //   this.setState({ route })
+  // }
 
   markCompleted = completedName => {
     this.setState({ completed: completedName }, () => {
@@ -66,59 +76,61 @@ class App extends Component {
   }
 
   render () {
-    const { route, user, errors, jobId, completed } = this.state
+    const { user, errors, jobId, completed } = this.state
     return (
-      <div className='App container'>
-        <div className='container div-center center'>
-          <h3 className='teal-text'>
-            Vertis Time Tracker
-          </h3>
-          {Object.keys(user).length > 0 &&
-            <div className='container'>
-              <p>
-                <i className='tiny material-icons mat-color'>
-                  account_circle
-                </i>
-                {' '}
-                {user.name} | {user.email} |
-                {' '}
-                <u className='clickable red-text' onClick={this.logoutUser}>
-                  Logout
-                </u>
-              </p>
-
-            </div>}
-        </div>
-        {route === 'login'
-          ? <Login
-            changeRoute={this.changeRoute}
-            loadUser={this.loadUser}
-            errors={errors}
-            handleErrors={this.handleErrors}
-            clearErrors={this.clearErrors}
-          />
-          : route === 'home'
-            ? <Jobs
+      <BrowserRouter>
+        <div className='App container'>
+          <Header user={user} logoutUser={this.logoutUser} />
+          <Route exact path='/' render={routeProps => (
+            <Login
+              {...routeProps}
+              loadUser={this.loadUser}
+              errors={errors}
+              handleErrors={this.handleErrors}
+              clearErrors={this.clearErrors}
+            />
+          )} />
+          <Route exact path='/home' render={routeProps => (
+            <Jobs
+              {...routeProps}
               handleErrors={this.handleErrors}
               clearErrors={this.clearErrors}
               handleJob={this.handleJob}
               completed={completed}
             />
-            : route === 'job'
-              ? <Job
+          )} />
+
+          {/* {route === 'login'
+            ? <Login
+              changeRoute={this.changeRoute}
+              loadUser={this.loadUser}
+              errors={errors}
+              handleErrors={this.handleErrors}
+              clearErrors={this.clearErrors}
+            />
+            : route === 'home'
+              ? <Jobs
                 handleErrors={this.handleErrors}
                 clearErrors={this.clearErrors}
-                errors={errors}
-                jobId={jobId}
-                user={user}
-                changeRoute={this.changeRoute}
-                markCompleted={this.markCompleted}
+                handleJob={this.handleJob}
+                completed={completed}
               />
-              : <Login
-                changeRoute={this.changeRoute}
-                loadUser={this.loadUser}
-              />}
-      </div>
+              : route === 'job'
+                ? <Job
+                  handleErrors={this.handleErrors}
+                  clearErrors={this.clearErrors}
+                  errors={errors}
+                  jobId={jobId}
+                  user={user}
+                  changeRoute={this.changeRoute}
+                  markCompleted={this.markCompleted}
+                />
+                : <Login
+                  changeRoute={this.changeRoute}
+                  loadUser={this.loadUser}
+                />} */}
+        </div>
+      </BrowserRouter>
     )
   }
 }
